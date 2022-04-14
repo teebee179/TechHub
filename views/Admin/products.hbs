@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+  <title>Product Page - Admin HTML Template</title>
+  {{> linkAdmin}}
+</head>
+
+<body id="reportsPage">
+  {{> headerAdmin}}
+  <div class="container mt-5">
+    <div class="row tm-content-row">
+      <div class="col-sm-12 col-md-12 col-lg-8 col-xl-8 tm-block-col">
+        <div class="tm-bg-primary-dark tm-block tm-block-products">
+          <div class="tm-product-table-container overflow-auto">
+            <table class="table table-hover table-responsive" id="productTable">
+              <thead>
+                <tr>
+                  <th scope="col">&nbsp;</th>
+                  <th scope="col">PRODUCT NAME</th>
+                  <th scope="col">Price</th>
+                  <th scope="col">IN STOCK</th>
+                  <th scope="col">IMPORTED DATE</th>
+                  <th scope="col">&nbsp;</th>
+                </tr>
+              </thead>
+              <tbody id="productBody">
+                {{#each products}}
+                <tr class="productRow">
+                  <th scope="row"><input name="id" value={{id}} class="choose-to-del" type="checkbox" /></th>
+                  <td class="tm-product-name" id={{ id }} name="id"><a style="color: white"
+                      href="/admin/products/edit/{{id}}">{{ product_name }}</a></td>
+                  <td>{{ price }}</td>
+                  <td>{{ in_stock }}</td>
+                  <td>{{ import_date }}</td>
+                  <td>
+                    <button class="tm-product-delete-link" form="delete_form" name='prod_id' value={{id}} type="submit"
+                      style='border:none;'>
+                      <i class="far fa-trash-alt tm-product-delete-icon"></i>
+                    </button>
+                  </td>
+                </tr>
+                {{/each}}
+              </tbody>
+            </table>
+          </div>
+          <nav aria-label="Page navigation example col-lg">
+
+            <ul class="pagination justify-content-center col-lg" id="page">
+
+              <li class="page-item">
+                <a class="page-link" id = "pagePrev">Previous</a>
+              </li>
+              {{#pages}}
+              <li class="page-item "><a class="page-link currPage" value={{.}}>{{.}}</a></li>
+              {{/pages}}
+              <li>
+                <a class="page-link"  id = "pageNext">Next</a>
+              </li>
+            </ul>
+       
+          </nav>
+          <!-- table container -->
+          <a href=" /admin/products/add" class="btn btn-primary btn-block text-uppercase mb-3">Add new product</a>
+                <form action="" id="delete_form" method="post">
+                  <button class="btn btn-primary btn-block text-uppercase" id="del-btn"> Delete selected products
+                  </button>
+                </form>
+        </div>
+      </div>
+      <div class="col-sm-12 col-md-12 col-lg-4 col-xl-4 tm-block-col">
+        <div class="tm-bg-primary-dark tm-block tm-block-product-categories">
+          <h2 class="tm-block-title">Product Categories</h2>
+          <div class="tm-product-table-container">
+            <table class="table tm-table-small tm-product-table">
+              <tbody>
+                {{#types}}
+                <tr>
+                  <td>{{type_name}}</td>
+                  <td class="text-center">
+                    <a href="/admin/products/category/{{type_name}}" class="tm-product-delete-link">
+                      <i class="far fa-trash-alt tm-product-delete-icon"></i>
+                    </a>
+                  </td>
+                </tr>
+                {{/types}}
+              </tbody>
+            </table>
+          </div>
+          <!-- table container -->
+          <form action="/admin/products/category/" method="get">
+            <input style="width: 100%" type="text" placeholder="Category Name" id="new-Category" name="type_name">
+            <button class="btn btn-primary btn-block text-uppercase mb-3">
+              Add new category
+            </button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+  {{> footerAdmin}}
+  {{> scriptAdmin}}
+  <script>
+    $('.fa-shopping-cart').parent().addClass('active');
+
+    $(function () {
+      $('.page-link').on('click', function () {
+        const page = $(this).attr('value');
+        console.log("currpage" + page);
+
+        $.getJSON('/admin/products/' + page, function (data) {
+          $('#productBody').empty();
+          var i;
+          for (i = 0; i < data.length; ++i) {
+            var productRow = ' <tr>' + '<th scope="row"><input name="id" value={{id}} class="choose-to-del" type="checkbox" /></th>' +
+              '<td class="tm-product-name">' + '<a style="color: white" href="/admin/products/edit/' + data[i].id + '">' + data[i].product_name + '</a>  </td>' + '</td>' +
+              '<td>' + data[i].price + '</td>' +
+              '<td>' + data[i].in_stock + '</td>' +
+              '<td>' + data[i].import_date + '</td>' +
+              '</tr>';
+
+            $('#productBody').append(productRow)
+          }
+          JSON.stringify(data)
+          console.log(data);
+        })
+      })
+
+      $('#pageNext').on('click', function () {
+        var page = $('.currPage').attr('value');
+        page = parseInt(page) + 1;
+        console.log("next page"+ page);
+        $.getJSON('/admin/products/' + page, function (data) {
+          $('#productBody').empty();
+          var i;
+          for (i = 0; i < data.length; ++i) {
+            var productRow = ' <tr>' + '<th scope="row"><input name="id" value={{id}} class="choose-to-del" type="checkbox" /></th>' +
+              '<td class="tm-product-name">' + '<a style="color: white" href="/admin/products/edit/' + data[i].id + '">' + data[i].product_name + '</a>  </td>' + '</td>' +
+              '<td>' + data[i].price + '</td>' +
+              '<td>' + data[i].in_stock + '</td>' +
+              '<td>' + data[i].import_date + '</td>' +
+              '</tr>';
+
+            $('#productBody').append(productRow)
+          }
+          JSON.stringify(data)
+          console.log(data);
+        })
+      })
+
+    })
+    $("#del-btn").click(function () {
+
+    })
+  </script>
+</body>
+
+</html>

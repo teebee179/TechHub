@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+{{> linkAdmin}}
+{{> headerAdmin}}
+
+<body>
+    <div class="container mt-5">
+        <div class="row tm-content-row">
+            <div class="col-md-12 tm-block-col" style="max-height: auto;">
+                <div class="tm-bg-primary-dark tm-block tm-block-products">
+                    <div id="listingTable" class="tm-product-table-container">
+                        <table class="table table-hover tm-table-small tm-product-table">
+                            <thead>
+                                <tr>
+                                    <th scope="col">&nbsp;</th>
+                                    <th scope="col">USERNAME</th>
+                                    <th scope="col">FULL NAME</th>
+                                    <th scope="col">ADDRESS</th>
+                                    <th scope="col">EMAIL</th>
+                                    <th scope="col">&nbsp;</th>
+                                </tr>
+                            </thead>
+                            <tbody id="userBody">
+                                {{#users}}
+                                <tr>
+                                    <th scope="row"><input type="checkbox" /></th>
+                                    <td class="tm-product-name"
+                                        onclick="location.href='./manages/user-detail/{{user_id}}';"
+                                        style="cursor: pointer;" name='user_id' value={{user_id}} type="submit">
+                                        {{user_username}}</td>
+                                    <!--TODO add name-->
+                                    <td>{{user_fullname}}</td>
+                                    <!--TODO add date-->
+                                    <td>{{user_address}}</td>
+                                    <!--TODO add total-->
+                                    <td>{{user_email}}</td>
+                                    <!--TODO add status-->
+                                    <td>
+                                        <a href="./manages/del/{{user_id}}" class="tm-product-delete-link">
+                                            <!--TODO add id-->
+                                            <i class="far fa-trash-alt tm-product-delete-icon"></i>
+                                        </a>
+                                    </td>
+                                </tr>
+                                {{/users}}
+                            </tbody>
+                        </table>
+                    </div>
+                    <!-- table container -->
+                    <!--TODO {{#if (hasPagination pageCount)}}-->
+                    <div class="">
+                        <!--TODO pagination-->
+                        <!--TODO{{#with (previous page req.path req.query)}}-->
+                        <a href="#">&laquo;</a>
+                        <!--TODO{{/with}}-->
+
+                        <a class="active" href="#">1</a>
+                        <!--TODO href = {{path}}, class={{class}}-->
+                        <a href="#">2</a>
+                        <!--TODO href = {{path}}, class={{class}}-->
+                        <a href="#">3</a>
+                        <!--TODO href = {{path}}, class={{class}}-->
+
+                        <!--TODO{{#with (next page pageCount req.path req.query)}}-->
+                        <a href="#">&raquo;</a>
+                        <!--TODO{{/with}}-->
+                    </div>
+                    <!--TODO {{/if}}-->
+                    <nav aria-label="Page navigation example col-lg">
+
+                        <ul class="pagination justify-content-center col-lg" id="page">
+
+                            <li class="page-item">
+                                <a class="page-link" id="pagePrev">Previous</a>
+                            </li>
+                            {{#pages}}
+                            <li class="page-item "><a class="page-link currPage" value={{.}}>{{.}}</a></li>
+                            {{/pages}}
+                            <li>
+                                <a class="page-link" id="pageNext">Next</a>
+                            </li>
+                        </ul>
+
+                    </nav>
+                    <button class="btn btn-primary btn-block text-uppercase">
+                        Delete selected accounts
+                    </button>
+
+                </div>
+            </div>
+        </div>
+    </div>
+    {{> footerAdmin}}
+    {{> scriptAdmin}}
+    <script>
+        $('.fa-users').parent().addClass('active');
+        $(function () {
+            $('.page-link').on('click', function () {
+                const page = $(this).attr('value');
+                
+                $.getJSON('/admin/manages/' + page, function (data) {
+                    
+                    $('#userBody').empty();
+                    var i;
+                    for (i = 0; i < data.length; ++i) {
+                        var userRow = ' <tr>' + '<th scope="row"><input name="id" value={{id}} class="choose-to-del" type="checkbox" /></th>' +
+                            '<td class="tm-product-name">' + '<a style="color: white" href="/admin/products/edit/' + data[i].id + '">' + data[i].user_username + '</a>  </td>' + '</td>' +
+                            '<td>' + data[i].user_fullname + '</td>' +
+                            '<td>' + data[i].user_address + '</td>' +
+                            '<td>' + data[i].user_email + '</td>' +
+                            '</tr>';
+
+                        $('#userBody').append(userRow)
+                    }
+                    JSON.stringify(data)
+                    
+                })
+            })
+        })
+    </script>
+</body>
+
+</html>

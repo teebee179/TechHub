@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+    {{> header}}
+    {{> link}}
+    <body>
+        <div class="row py-5 px-5">
+            <div class="col-8 px-2">
+                <div>
+                    <p class="float-left" style="font-size:x-large">Giỏ Hàng</p>
+                    <p class="float-right btn">xóa tất cả</p>
+                </div>
+                <div class="row container-fluid custom_nav-container px-3 py-3">
+                    <ul class="list-group" style="width: 100%;">
+                        <li class="list-group-item">
+                            <div class="row d-flex align-items-center">
+                                <div class="col-1">
+                                    <div class="form-check form-check-inline">
+                                        <input class="form-check-input" type="checkbox" id="inlineCheckbox1" value="option1">
+                                    </div>
+                                </div>
+                                <div class="col-2">
+                                    <img src="img/p1.png" height="64px" />
+                                </div>
+                                <div class="col-4">
+                                    <a class="description" href="product">Description</a>
+                                </div>
+                                <div class="col-3">
+                                    <div style="display: inline-flex;">
+                                        <button class="btn">-</button>
+                                        <input min="1" size="1" maxlength="2">
+                                        <button class="btn">+</button>
+                                    </div>
+                                </div>
+                                <div class="col-2">
+                                    Price
+                                </div>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <div class="col-4 px-2">
+                <div class="container-fluid custom_nav-container p-3">
+                    <div class="navbar-brand"><span>Thanh toán</span></div>
+                    <div class="row nav-item">
+                        <div class="w-100 px-3">
+                            <p class="float-left">Tạm tính</p>
+                            <p class="float-right" style="color:#f2b01e;">price</p>
+                        </div>
+                    </div>
+                    <div class="row nav-item">
+                        <div class="px-3 w-100">
+                            <p class="float-left">Thành tiền</p>
+                            <p class="float-right" style="color: #f2b01e;">price</p>
+                        </div>
+                    </div>
+                    <div class="btn light" style="font-size: x-large;">Thanh toán</div>
+                </div>
+            </div>
+        </div>
+    </body>
+
+    {{> footer}}
+
+</html>

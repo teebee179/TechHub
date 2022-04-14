@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+{{> linkAdmin}}
+
+<body>
+    {{>headerAdmin}}
+    <div class="row mt-4">
+        <div class="col-9">
+            <div class="tm-bg-primary-dark tm-block">
+                <div class="row">
+                    <div class="col-3 flex-column">
+                        <div class="tm-circular-avatar-container">
+                            <img src="/img/avatar.png"/>
+                        </div>
+                        <div class="tm-avatar-title d-flex justify-content-center">Lorem</div>
+                    </div>
+                    
+                    <div class="col-9">
+                        <div class="tm-block-info-container flex-column h-100 py-4">
+                            <div class="row px-3">
+                                <div class="col title">Customer ID</div>
+                                <div class="col text-dark">#123</div> <!--TODO{{id}}-->
+                            </div>
+                            <hr class="separator">
+                            <div class="row px-3">
+                                <div class="col title">Customer Name</div>
+                                <div class="col text-dark">Lorem</div> <!--TODO{{name}}-->
+                            </div>
+                            <hr class="separator">
+                            <div class="row px-3">
+                                <div class="col title">Email</div>
+                                <div class="col text-dark">abc@gmail.com</div> <!--TODO{{email}}-->
+                            </div>
+                            <hr class="separator">
+                            <div class="row px-3">
+                                <div class="col title">Tel</div>
+                                <div class="col text-dark">1234567890</div> <!--TODO{{tel}}-->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row justify-content-end py-4">
+                    <a class="btn btn-primary text-uppercase" href="">
+                        Delete this account
+                    </a>
+                </div>
+            </div>
+        </div>
+        <div class="col-3 px-3">
+            <div class="table">DashBoard</div>
+            <thead style="color: darkgray; font-style: italic;">
+                unavailable
+            </thead>
+        </div>
+    </div>
+</body>
+<footer>
+    {{> footerAdmin}}
+</footer>
+</html>

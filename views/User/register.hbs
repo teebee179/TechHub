@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>Create an account</title>
+    {{> link}}
+    <link rel="stylesheet" href="/css/templatemo-style.css">
+
+  </head>
+
+  <body>
+    <div>
+      <nav class="navbar navbar-expand-xl" style="color:orange; align-items: center; justify-content:center; font-size: 3rem">
+        <a href="/" style="color:orange;">TechHub</a>
+      </nav>
+    </div>
+    <div class="container tm-mt-big tm-mb-big">
+      <div class="row">
+        <div class="col-12 mx-auto tm-login-col">
+          <div class="tm-bg-primary-dark tm-block tm-block-h-auto">
+            <div class="row">
+              <div class="col-12 text-center">
+                <h2 class="tm-block-title mb-4">Create an account</h2>
+              </div>
+            </div>
+            <div class="row mt-2">
+              <div class="col-12">
+                <form action="/register" method="post" class="tm-login-form">
+                  <div class="form-group">
+                    <label for="user_fullname">Full Name</label>
+                    <input
+                      name="user_fullname"
+                      type="text"
+                      class="form-control validate"
+                      id="user_fullname"
+                      value=""
+                      required
+                    />
+                  </div>
+                  <div class="form-group">
+                    <label for="user_email">Email</label>
+                    <input
+                      name="user_email"
+                      type="email"
+                      class="form-control validate"
+                      id="user_email"
+                      value=""
+                      required
+                    />
+                  </div>
+                  <div class="form-group">
+                    <label for="user_address">Address</label>
+                    <input
+                      name="user_address"
+                      type="text"
+                      class="form-control validate"
+                      id="usre_address"
+                      value=""
+                    />
+                  </div>
+                  <div class="form-group">
+                    <label for="user_username">Username</label>
+                    <input
+                      name="user_username"
+                      type="text"
+                      class="form-control validate"
+                      id="user_username"
+                      value=""
+                      required
+                    />
+                  </div>
+                  <div class="form-group mt-3">
+                    <label for="user_password">Password</label>
+                    <input
+                      name="user_password"
+                      type="password"
+                      class="form-control validate"
+                      id="user_password"
+                      value=""
+                      required
+                    />
+                  </div>
+                  <div class="form-group mt-3">
+                    <label for="re_password">Confirm Password</label>
+                    <input
+                      name="re_password"
+                      type="password"
+                      class="form-control validate"
+                      id="re_password"
+                      value=""
+                      required
+                    />
+                  </div>
+                  <div class="form-group mt-4">
+                    <button 
+                      type="submit"
+                      class="btn btn-primary btn-block text-uppercase"
+                    >
+                      Sign Up
+                    </button>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    {{> footer }}
+    {{> script}}
+  </body>
+</html>
