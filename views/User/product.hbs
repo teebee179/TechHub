@@ -119,19 +119,9 @@
           var i;
           let htmlString = ``
           for (i = 0; i < data.length; ++i) {
-            /*
-            var  = 
-              '<div class="col-sm-6 col-lg-4">' +
-              '<div class="box">' + '<div class="img-box">' + '<img src=' + data[i].prod_img + ' alt="" name={{product_name}}>'
-              + `<button class="add_cart_btn" value=${date[i].id}>`
-              + '<a href="detail/' + data[i].id + '" class="detail_btn" > <span> Detail </span> </a> </div>'
-              + '<div class="detail-box">' + '<h5 name={{prod_name}}>' + data[i].product_name + '</h5>'
-              + '<div class="product_info">' + '<h5 name={{prod_price}}>' + '<span>$</span>' + data[i].price + '</h5>'
-              + '</div> </div> </div> </div>'
-            */
             htmlString = 
             `
-              <div class="col-sm-6 col-lg-4">
+              <div class="col-sm-6 col-lg-4 prod-${data[i].id}">
                 <div class="box">
                   <div class="img-box">
                     <img id=${data[i].id} src=${data[i].prod_img} alt="" name=${data[i].product_name}>

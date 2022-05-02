@@ -17,7 +17,7 @@
             <div class="col-8 px-2">
                 <div>
                     <p class="float-left" style="font-size:x-large">Giỏ Hàng</p>
-                    <p class="float-right btn">xóa tất cả</p>
+                    <p class="float-right btn deleteAll">xóa tất cả</p>
                 </div>
                 <div class="row container-fluid custom_nav-container px-3 py-3">
                     <ul class="list-group" style="width: 100%;">
@@ -154,13 +154,16 @@
 
             let new_quantity = +quantity_element.val() - 1;
 
-            if (localStorage.getItem(key).split(' ')[0] > 0) {
-                localStorage.setItem(key, new_quantity + ' ' + localStorage.getItem(key).split(' ')[1] + ' ' + localStorage.getItem(key).split(' ')[2])
+            if (localStorage.getItem(key).split('_')[0] > 0) {
+                localStorage.setItem(key, new_quantity + '_' + localStorage.getItem(key).split('_')[1] + '_' + localStorage.getItem(key).split('_')[2] + '_' + localStorage.getItem(key).split('_')[3])
                 quantity_element.attr('value', new_quantity)
                 price_element.html(+price_element.attr('value') * new_quantity)
 
             }
-
+            else {
+                localStorage.removeItem(key);
+                $(`.prod-${key}`).empty();
+            }
             updateCart()
             updateTotal()
         })
@@ -172,7 +175,7 @@
             let price_element = $(`.price-column-${key}`)
 
             let new_quantity = +quantity_element.val() + 1;
-            localStorage.setItem(key, new_quantity + ' ' + localStorage.getItem(key).split(' ')[1] + ' ' + localStorage.getItem(key).split(' ')[2])
+            localStorage.setItem(key, new_quantity + '_' + localStorage.getItem(key).split('_')[1] + '_' + localStorage.getItem(key).split('_')[2]+ '_' + localStorage.getItem(key).split('_')[3])
             quantity_element.attr('value', new_quantity)
             price_element.html(+price_element.attr('value') * new_quantity)
             updateCart()
@@ -181,7 +184,14 @@
         })
     </script>
     <script>
-
+        $('.deleteAll').on('click', function(){
+            $('.list-group').empty();
+            localStorage.clear();
+            document.querySelector('.fa-shopping-cart').textContent = `\t` + "0";
+            $('.temp_total').html("0")
+            $('.tax').html("0")
+            $('.total').html("0")
+        })
     </script>
     {{> updateCart}}
     {{> localStorageChange}}
