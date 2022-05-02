@@ -3,7 +3,6 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { AdminHomeModule } from './admin-home/admin-home.module';
 import { AdminProductModule } from './admin-product/admin-product.module';
-import { AdminLoginModule } from './admin-login/admin-login.module';
 import { AdminManagementModule } from './admin-management/admin-management.module';
 import { AdminUserDetailModule } from './admin-user-detail/admin-user-detail.module';
 import { UserProductModule } from './user-product/user-product.module';
@@ -22,12 +21,12 @@ import entities from './Entities/All_Entities';
 import { ConfigModule } from '@nestjs/config';
 import { UsersModule } from './users/users.module';
 import { UserProfileModule } from './user-profile/user-profile.module';
+import { AdminLoginModule } from './admin-login/admin-login.module';
 
 @Module({
   imports: [
     AdminHomeModule,
     AdminProductModule,
-    AdminLoginModule,
     AdminManagementModule,
     AdminUserDetailModule,
     UserProductModule,
@@ -41,18 +40,20 @@ import { UserProfileModule } from './user-profile/user-profile.module';
     UserLoginModule,
     ConfigModule.forRoot(),
     TypeOrmModule.forRoot({
-      type: 'mysql',
-      host: 'localhost',
-      port: 3306,
-      username: 'root',
-      password: '123456',
-      database: 'users',
+      url: process.env.DATABASE_URL,
+      type: 'postgres',
+      //ssl: process.env.DATABASE_URL? true : false,
+      ssl: {
+        rejectUnauthorized: false,
+      },
       entities: entities,
-      synchronize: true,
+      synchronize: true, // This for development
+      autoLoadEntities: true,
     }),
     UserRegisterModule,
     GoogleLoginModule,
     UserProfileModule,
+    AdminLoginModule,
     
   ],
   controllers: [AppController],

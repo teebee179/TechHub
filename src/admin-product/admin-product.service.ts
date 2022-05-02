@@ -5,7 +5,6 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Product } from 'src/Entities/Product';
 import { Repository } from 'typeorm';
-import { isEmpty } from 'class-validator';
 
 @Injectable()
 export class AdminProductService {
@@ -91,6 +90,4 @@ export class AdminProductService {
         const current_Product = await this.get_One_type_By_Name(name);
         return await this.typeRepo.remove(current_Product);
     }
-
-
 }

@@ -51,24 +51,24 @@
 
             <ul class="pagination justify-content-center col-lg" id="page">
 
-              <li class="page-item">
-                <a class="page-link" id = "pagePrev">Previous</a>
+              <li class="page-item prevBtn" id="pagePrev">
+                <a class="page-link">Previous</a>
               </li>
               {{#pages}}
-              <li class="page-item "><a class="page-link currPage" value={{.}}>{{.}}</a></li>
+              <li class="page-item"><a class="page-link pageNumber" value={{.}}> {{.}}</a></li>
               {{/pages}}
-              <li>
-                <a class="page-link"  id = "pageNext">Next</a>
+              <li class="page-item nextBtn" id="pageNext">
+                <a class="page-link">Next</a>
               </li>
             </ul>
-       
+          
           </nav>
           <!-- table container -->
           <a href=" /admin/products/add" class="btn btn-primary btn-block text-uppercase mb-3">Add new product</a>
-                <form action="" id="delete_form" method="post">
-                  <button class="btn btn-primary btn-block text-uppercase" id="del-btn"> Delete selected products
-                  </button>
-                </form>
+          <form action="" id="delete_form" method="post">
+            <button class="btn btn-primary btn-block text-uppercase" id="del-btn"> Delete selected products
+            </button>
+          </form>
         </div>
       </div>
       <div class="col-sm-12 col-md-12 col-lg-4 col-xl-4 tm-block-col">
@@ -91,7 +91,7 @@
             </table>
           </div>
           <!-- table container -->
-          <form action="/admin/products/category/" method="get">
+          <form action="/Admin/products/category/" method="get">
             <input style="width: 100%" type="text" placeholder="Category Name" id="new-Category" name="type_name">
             <button class="btn btn-primary btn-block text-uppercase mb-3">
               Add new category
@@ -105,13 +105,14 @@
   {{> scriptAdmin}}
   <script>
     $('.fa-shopping-cart').parent().addClass('active');
-
+    
     $(function () {
-      $('.page-link').on('click', function () {
+      $('.pageNumber').on('click', function () {
+        $('.pageNumber').removeClass('active')
+        $(this).addClass('active');
         const page = $(this).attr('value');
-        console.log("currpage" + page);
-
-        $.getJSON('/admin/products/' + page, function (data) {
+        console.log("currpage: " + page);
+        $.getJSON('/admin/products/page/' + page, function (data) {
           $('#productBody').empty();
           var i;
           for (i = 0; i < data.length; ++i) {
@@ -130,10 +131,17 @@
       })
 
       $('#pageNext').on('click', function () {
-        var page = $('.currPage').attr('value');
-        page = parseInt(page) + 1;
-        console.log("next page"+ page);
-        $.getJSON('/admin/products/' + page, function (data) {
+        const totalPages = $('.pageNumber').get().length;
+        var page = parseInt($('.pageNumber.active').attr('value'));
+        console.log(page)
+        page++;
+        if(page >= totalPages){
+          page = totalPages;
+        }
+        $('.pageNumber.active').removeClass('active')
+        $('.pageNumber.active').text(page).addClass('active')
+        console.log("next page" + page);
+        $.getJSON('/admin/products/page' + page, function (data) {
           $('#productBody').empty();
           var i;
           for (i = 0; i < data.length; ++i) {
@@ -146,8 +154,6 @@
 
             $('#productBody').append(productRow)
           }
-          JSON.stringify(data)
-          console.log(data);
         })
       })
 

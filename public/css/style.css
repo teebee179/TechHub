@@ -2,9 +2,36 @@ body {
   font-family: 'Poppins', sans-serif;
   color: #0c0c0c;
   background-color: #ffffff;
-  overflow-x: hidden;
+  /* overflow-x: hidden; */
+  position: relative;
+  width: 100%;
 }
 
+ul {
+  list-style: none;
+}
+.cart {
+  position: relative;
+  width: 100%;
+}
+
+.filtering {
+  display: flex;
+  justify-content: space-between;
+  position: sticky;
+  top: 0;
+  margin-bottom: 25px;
+}
+
+#quick-search{
+  border-radius: 5px;
+  flex-grow:  0.5;
+  padding: 0px 15px;
+}
+
+.filter-choice{
+  margin-left: 5px;
+}
 .description{
   font-size: small;
   color: #000000;
@@ -121,6 +148,10 @@ a:focus {
 
 .header_section {
   background-color: black;
+  position: relative;
+  top: 0;
+  width: 100%;
+  z-index: 4;
 }
 
 .header_section .container-fluid {
@@ -769,6 +800,8 @@ a:focus {
   background-color: black;
   color: #ffffff;
   padding: 90px 0 45px 0;
+  position: relative;
+  bottom: 0;
 }
 
 .info_section h5 {
@@ -804,6 +837,7 @@ a:focus {
   background: orange;
   margin-top: 15px;
   text-transform: uppercase;
+  position: relative;
 }
 
 .info_section .info_form .social_box {
@@ -825,6 +859,7 @@ a:focus {
   position: relative;
   background-color: black;
   text-align: center;
+  width: 100%;
 }
 
 .footer_section p {

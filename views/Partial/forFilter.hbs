@@ -1,0 +1,71 @@
+<script>
+    //search
+    $(function() {
+      $('#quick-search').on('keyup', function() {
+        const search_item = $(this).val().toLocaleLowerCase();
+        
+        $('.box').filter(function() {
+          $(this).parent().toggle($(this).children('.detail-box').children('h5.product-name').text().toLocaleLowerCase().indexOf(search_item) > -1);
+        })
+      })
+    })
+
+
+    //sort a-z
+    $(function() {
+      $('.a-z').on('click', function() {
+        $(this).addClass('active')
+        $('.p-desc').removeClass('active')
+        $('.p-asc').removeClass('active')
+        let list = $('ul.items');
+        let alphabet = $('li.col-sm-6');
+        alphabet.sort(function(first, second) {
+          return $(first).text().toLowerCase().localeCompare($(second).text().toLowerCase());
+        })
+        $.each(alphabet, function(index, item) {
+          list.append(item)
+        })
+      })
+    })
+
+    //price asc
+    $(function() {
+      $('.p-asc').on('click', function() {
+        $(this).addClass('active')
+        $('.a-z').removeClass('active')
+        $('.p-desc').removeClass('active')
+        let list = $('ul.items');
+        let price = $('li.col-sm-6');
+        price.sort(function(second, first) {
+          number1 = Number($(first).children().children().children().children('h5').text().replace('$', '').replace(' ', ''))
+          number2 = Number($(second).children().children().children().children('h5').text().replace('$', '').replace(' ', ''))
+          return number2 - number1;
+        })
+        $.each(price, function(index, item) {
+          list.append(item)
+        })
+      })
+    })
+
+
+    //price desc
+    $(function() {
+      $('.p-desc').on('click', function() {
+        $(this).addClass('active')
+        $('.a-z').removeClass('active')
+        $('.p-asc').removeClass('active')
+        let list = $('ul.items');
+        let price = $('li.col-sm-6');
+        price.sort(function(second, first) {
+          number1 = Number($(first).children().children().children().children('h5').text().replace('$', '').replace(' ', ''))
+          number2 = Number($(second).children().children().children().children('h5').text().replace('$', '').replace(' ', ''))
+          return number1 - number2;
+        })
+        $.each(price, function(index, item) {
+
+          list.append(item)
+        })
+      })
+    })
+
+  </script>

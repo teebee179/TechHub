@@ -1,31 +1,51 @@
 import { Injectable } from '@nestjs/common';
-import { JwtService } from '@nestjs/jwt';
 import { InjectRepository } from '@nestjs/typeorm';
+import { createAccountDto } from 'src/DTO/createAccount.dto';
 import { Account } from 'src/Entities/Account';
-import { UsersService } from 'src/users/users.service';
 import { Repository } from 'typeorm';
+
+const bcrypt = require('bcryptjs');
 
 @Injectable()
 export class AdminLoginService {
     constructor(
-        @InjectRepository(Account) private readonly accountRepo: Repository<Account>,
-        private usersService: UsersService,
-        private jwtService: JwtService
-    ){}
+        @InjectRepository(Account) private userRepo: Repository<Account>,
+    ) {}
 
-    async validateUser(username: string, pass: string): Promise<any> {
-      const user = await this.usersService.findOne(username);
-      if (user && user.password === pass) {
-        const { password, ...result } = user;
-        return result;
-      }
-      return null;
+    async validUser(username: string, password: string) {
+        const find_user = await this.userRepo.findOne({
+        where: {
+                user_Name: username
+            },
+        });
+        console.log(find_user);
+        
+        if(!find_user) return null;
+
+        const res = bcrypt.compareSync(password, find_user.password);
+        if(res == false) return null;
+        return find_user;
     }
-  
-    async login(user: any) {
-      const payload = { username: user.username, sub: user.userId };
-      return {
-        access_token: this.jwtService.sign(payload),
-      };
+
+    registerUser(user: createAccountDto){
+        console.log(user);
+        user.password = this.hashPassword(user.password)
+        this.userRepo.create(user)
+        return this.userRepo.save(user)
+    }
+
+    hashPassword(password: string): string {
+        const hash = bcrypt.hashSync(password, 10);
+        return hash;
+    }
+    
+    get_All_Users(): Promise<Account[]> {
+        return this.userRepo.find();
+    }
+
+    async is_Exists(user_name: string): Promise<Boolean> {
+        const users = await this.userRepo.find()
+        const exists = await users.find(user => user.user_Name === user_name)
+        return (!!exists);
     }
 }

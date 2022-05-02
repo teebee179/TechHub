@@ -1,12 +1,12 @@
-import { Controller, Get, Render, Request, Post, UseGuards, Body, Redirect, Res, Req } from '@nestjs/common';
+import { Controller, Get, Render, Request, Post, UseGuards, Body, Redirect, Res, Req, UseFilters} from '@nestjs/common';
 import { UserLoginService } from './user-login.service';
-import { LocalAuthGuard } from './local-auth.guard';
 import { JwtService } from '@nestjs/jwt';
-import { createUserDto } from 'src/DTO/createUser.dto';
-import { AuthGuard } from '@nestjs/passport';
 import { Response } from 'express';
+import { LoginGuard } from '../Guards/login.guard';
+import { AuthExceptionFilter } from '../Guards/auth-exception.filter';
 
 @Controller('/login')
+@UseFilters(AuthExceptionFilter)
 export class UserLoginController {
   constructor(
     private readonly userLoginService: UserLoginService,
@@ -14,21 +14,21 @@ export class UserLoginController {
 
   @Get()
   @Render('./User/login')
-  root(@Req() req){
-    if(req.user){
-      return {url: '/'};
-    }
+  root(@Req() req, @Res() res: Response){
+    return;
   }
 
   @Post()
-  @UseGuards(AuthGuard('local'))
-  @Redirect('./')
+  @UseGuards(LoginGuard)
+  @Render("./User/home")
   async login(@Body() user, @Req() req) {
+    const products = await this.userLoginService.get_All_Products(0,9).then();
     const foundUser = await this.userLoginService.verifyUser(user.username, user.password);
     if (!foundUser) return { url: '/login' };
     const payload = {name: foundUser.user_username, sub:foundUser.user_id};
     const accessToken = this.jwtService.sign(payload);
     req.user = foundUser;
-    return { accessToken };
+    return {products, user: foundUser};
   }
+
 }

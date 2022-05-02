@@ -1,29 +1,26 @@
 import { Module } from '@nestjs/common';
 import { AdminLoginService } from './admin-login.service';
 import { AdminLoginController } from './admin-login.controller';
+import { PassportModule } from '@nestjs/passport';
+import { JwtModule } from '@nestjs/jwt';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import entities from 'src/Entities/All_Entities';
-import { UsersModule } from 'src/users/users.module';
-import { LocalStrategy } from './local.strategy';
-import { JwtModule } from '@nestjs/jwt';
-import { jwtConstants } from './constants';
-import { JwtStrategy } from './jwt.strategy';
-import { SessionSerializer } from './session.serializer';
-import { PassportModule } from '@nestjs/passport';
-
+import { JwtStrategy } from 'src/Guards/jwt.strategy';
+import { SessionSerializer } from 'src/Guards/session.serializer';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature(entities),
-    UsersModule,
+    PassportModule,
     JwtModule.register({
-      secret: jwtConstants.secret,
-      signOptions: { expiresIn: '15s' },
+      secret: 'jwtsecretkey',
+      signOptions: {
+        expiresIn: '60 seconds',
+      },
     }),
-    PassportModule.register({session: true})
+    TypeOrmModule.forFeature(entities),
+    PassportModule.register({session: true}),
   ],
   controllers: [AdminLoginController],
-  providers: [AdminLoginService, LocalStrategy, JwtStrategy, SessionSerializer],
-  exports: [AdminLoginService]
+  providers: [AdminLoginService, JwtStrategy, SessionSerializer]
 })
 export class AdminLoginModule {}

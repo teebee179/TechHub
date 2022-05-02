@@ -14,10 +14,9 @@ export class AppController {
     return { user:user };
   }
   @Get('/logout')
-  @Redirect('/')
-  logout(@Res({passthrough:true}) res: Response){
-    res.clearCookie('jwt');
-    res.locals.user = null;
+  logout(@Res({passthrough:true}) res: Response, @Req() req){
+    req.logout();
+    res.redirect('./')
   }
 }
 

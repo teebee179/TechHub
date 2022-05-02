@@ -1,13 +1,18 @@
-import { Controller, Get, Render, Request, Query, Redirect, UsePipes, ValidationPipe, Body, Post, Req, Param, Res} from '@nestjs/common';
+import { Controller, Get, Render, Request, Query, Redirect, UsePipes, ValidationPipe, Body, Post, Req, Param, Res, UseFilters, UseGuards} from '@nestjs/common';
 import { isEmpty, isNotEmpty } from 'class-validator';
 import { createProductDto } from 'src/DTO/createProduct.dto';
 import { createTypeDto } from 'src/DTO/createType.dto';
 
 import { Product } from 'src/Entities/Product';
+import { Admin_AuthExceptionFilter } from 'src/Guards/admin-auth-exception.filter';
+import { AuthenticatedGuard } from 'src/Guards/authenticated.guard';
 import { AdminProductService } from './admin-product.service';
 
 
 @Controller('admin/products')
+// @UseFilters(Admin_AuthExceptionFilter)
+// @UseGuards(AuthenticatedGuard)
+
 export class AdminProductController {
 
   constructor(private readonly adminProductService: AdminProductService) {}
@@ -31,7 +36,7 @@ export class AdminProductController {
     return {types: categories, products: prods, totalPages, pages: Array.from(Array(totalPages).keys()).map(i=>i+1),nextPage, prevPage,};
   }
 
-  @Get(':page')
+  @Get('page/:page')
   async adminProductPaging(@Param('page') page, @Res() res){
     const categories = await this.adminProductService.get_All_Type().then(); 
     if(!page || isNaN(page)) page = 1;
@@ -112,16 +117,26 @@ export class AdminProductController {
   }
 
   @Post('edit')
-  @Render('./Admin/edit-product')
   @Redirect('/admin/products')
   @UsePipes(ValidationPipe)
-  async postUpdatedProduct(@Body() body){
-    const categories = await this.adminProductService.get_All_Type().then();
-    const productDto:createProductDto = body;
-    const updated_Prod = await this.adminProductService.update_Product(productDto, body.id).then();
-    
-    return {prod: updated_Prod, types: categories};
+  async postUpdatedProduct(@Body() body) {
+    const productDto: createProductDto = body;
+    await this.adminProductService.update_Product(productDto, body.id);
   }
+
+  // @Get('edit/api/is-empty/:data')
+  // async checkEmptyInput(@Param('data') data): Promise<boolean> {
+  //   return await !isEmpty(data);
+  // @Render('./Admin/edit-product')
+  // @Redirect('/admin/products')
+  // @UsePipes(ValidationPipe)
+  // async postUpdatedProduct(@Body() body){
+  //   const categories = await this.adminProductService.get_All_Type().then();
+  //   const productDto:createProductDto = body;
+  //   const updated_Prod = await this.adminProductService.update_Product(productDto, body.id).then();
+    
+  //   return {prod: updated_Prod, types: categories};
+  // }
 
   @Get('/category')
   @Render('./Admin/products')
@@ -130,18 +145,30 @@ export class AdminProductController {
   @UsePipes(ValidationPipe)
   async addCategory(@Query() new_Type:createTypeDto){
     const categories = await this.adminProductService.get_All_Type().then();
-    const prods = await this.adminProductService.get_All_Products().then();
-
+    //paging
+    const page = 1;
+    const prods = await this.adminProductService.get_All_Products_By_Page((page-1)*5,5).then();
+    const total  = await this.adminProductService.getTotalProducts();
+    const totalPages = Math.ceil(total/5);
+    let nextPage = page + 1;
+    if(nextPage > totalPages){
+      nextPage = totalPages;
+    }
+    let prevPage = page - 1;
+    if(prevPage < 1){
+      prevPage = 1;
+    }
     if (new_Type.type_name){
       await this.adminProductService.create_Type(new_Type);
       const categories = await this.adminProductService.get_All_Type().then();
-      return {products: prods, types: categories};
+      return {products: prods, types: categories, totalPages, pages: Array.from(Array(totalPages).keys()).map(i=>i+1),nextPage, prevPage,};
     }
-    return {products: prods, types: categories};
+
+    return {products: prods, types: categories, totalPages, pages: Array.from(Array(totalPages).keys()).map(i=>i+1),nextPage, prevPage,};
 
   }
 
-  @Get('category/:type_name')
+  @Get('/category/:type_name')
   @Render('./Admin/products')
   @Redirect('/admin/products')
   async DeleteType(@Param() param){

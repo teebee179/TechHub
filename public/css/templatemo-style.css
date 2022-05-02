@@ -20,6 +20,8 @@ body {
   font-family: Roboto, Helvetica, Arial, sans-serif;
   background-color: var(--primary3);
   overflow-x: hidden;
+  position: relative;
+  height: 100vh;
 }
 a {
   transition: all 0.3s ease;
@@ -592,6 +594,11 @@ input[type="checkbox"]:focus {
   -webkit-box-shadow: 0 -3px 5px 0 rgba(69, 92, 113, 0.59);
   -moz-box-shadow: 0 -3px 5px 0 rgba(69, 92, 113, 0.59);
   box-shadow: 0 -3px 5px 0 rgba(69, 92, 113, 0.59);
+}
+.footer-area{
+  position: relative;
+  width: 100%;
+  bottom: 0;
 }
 .custom-select {
   height: 50px;

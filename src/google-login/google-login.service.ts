@@ -41,8 +41,8 @@ export class GoogleLoginService {
     return {
       access_token: this.jwtService.sign(
         {
-
           email: user.user_email,
+          fullname: user.user_fullname,
         },
         {
           secret: 'secretKey',
@@ -63,18 +63,13 @@ export class GoogleLoginService {
     user = (
       await this.findBy({ where: [{ user_email: data.user.email }] })
     )[0];
-    if (user)
-      throw new ForbiddenException(
-        "User already exists, but Google account was not connected to user's account"
-      );
-
+    if (user) return false;
     try {
       const newUser = new User();
       newUser.user_username = data.user.email;
-      newUser.user_fullname = data.user.lastName + data.user.firstName;
+      newUser.user_fullname = data.user.lastName + " " + data.user.firstName;
       newUser.user_email = data.user.email;
       newUser.user_id = data.user.id;
-
       await this.store(newUser);
       return this.login(newUser);
     } catch (e) {

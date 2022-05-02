@@ -1,8 +1,18 @@
 <!DOCTYPE html>
-<html>
-    {{> header}}
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
     {{> link}}
-    <body>
+</head>
+
+<body>
+    <div class="cart">
+        {{> header}}
+
         <div class="row py-5 px-5">
             <div class="col-8 px-2">
                 <div>
@@ -11,31 +21,7 @@
                 </div>
                 <div class="row container-fluid custom_nav-container px-3 py-3">
                     <ul class="list-group" style="width: 100%;">
-                        <li class="list-group-item">
-                            <div class="row d-flex align-items-center">
-                                <div class="col-1">
-                                    <div class="form-check form-check-inline">
-                                        <input class="form-check-input" type="checkbox" id="inlineCheckbox1" value="option1">
-                                    </div>
-                                </div>
-                                <div class="col-2">
-                                    <img src="img/p1.png" height="64px" />
-                                </div>
-                                <div class="col-4">
-                                    <a class="description" href="product">Description</a>
-                                </div>
-                                <div class="col-3">
-                                    <div style="display: inline-flex;">
-                                        <button class="btn">-</button>
-                                        <input min="1" size="1" maxlength="2">
-                                        <button class="btn">+</button>
-                                    </div>
-                                </div>
-                                <div class="col-2">
-                                    Price
-                                </div>
-                            </div>
-                        </li>
+
                     </ul>
                 </div>
             </div>
@@ -45,21 +31,160 @@
                     <div class="row nav-item">
                         <div class="w-100 px-3">
                             <p class="float-left">Tạm tính</p>
-                            <p class="float-right" style="color:#f2b01e;">price</p>
+                            <p class="float-right temp_total" style="color:#f2b01e;"></p>
+                        </div>
+                    </div>
+                    <div class="row nav-item">
+                        <div class="w-100 px-3">
+                            <p class="float-left">Thuế</p>
+                            <p class="float-right tax" style="color:#f2b01e;"></p>
                         </div>
                     </div>
                     <div class="row nav-item">
                         <div class="px-3 w-100">
                             <p class="float-left">Thành tiền</p>
-                            <p class="float-right" style="color: #f2b01e;">price</p>
+                            <p class="float-right total" style="color: #f2b01e;"></p>
                         </div>
                     </div>
-                    <div class="btn light" style="font-size: x-large;">Thanh toán</div>
+                    <div method="post" href="." class="btn light" type="submit" style="font-size: x-large;">Thanh toán
+                    </div>
                 </div>
             </div>
         </div>
-    </body>
+        {{> footer}}
+    </div>
+    {{> script}}
+    <script>
+        const header_height = $('.header_section').height();
+        document.querySelector('.cart').style.top = `${header_height}px`;
+        const cart_height = $('.cart').height();
+        document.querySelector('.info_section').style.top = `${header_height + cart_height}px`;
+    </script>
 
-    {{> footer}}
+    <script>
+        const user_items = `{{cartItems}}`
+        let products = ``
+        if (user_items)
+            products = user_items.split(' ')
+        console.log(products)
+        for (product in products) {
+            let key = products[product].split('_')[0]
+            let value = products[product].split('_')[1]
+            console.log(key, value)
+            localStorage.setItem(key, value)
+        }
+
+    </script>
+
+    <script>
+        let listItems = ``
+        const items = { ...localStorage }
+        for (key in items) {
+            quantity = items[key].split('_')[0]
+            productName = items[key].split('_')[1]
+            img = items[key].split('_')[2]
+            price = items[key].split('_')[3]
+            listItems +=
+                `
+                <li class="list-group-item" id=${key}>                            
+                    <div class="row d-flex align-items-center">
+                        <div class="col-1">
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="checkbox" id="inlineCheckbox1"
+                                    value="option1">
+                            </div>
+                        </div>
+                        <div class="col-2">
+                            <img src=${img} height="64px" />
+                        </div>
+                        <div class="col-4">
+                            <a class="description" href="/product/detail/{{id}}">${productName}</a>
+                        </div>
+                        <div class="col-3">
+                            <div style="display: inline-flex;">
+                                <button class="btn btn-desc" value=${key}>-</button>
+                                <input disabledc2 class="quantity-${key}"  style="text-align:center" min="1" size="1" maxlength="100", step="1" value=${quantity}>
+                                <button class="btn btn-inc" value=${key}>+</button>
+                            </div>
+                        </div>
+                        <div class="col-2 price-column-${key}" value="${price}">
+                            ${price}
+                        </div>
+                    </div>
+                </li>
+            `
+        }
+        document.querySelector('.list-group').innerHTML = listItems
+
+        const updateTotal = () => {
+            const items = { ...localStorage }
+            total = 0
+            for (key in items) {
+                quantity = items[key].split('_')[0]
+                productName = items[key].split('_')[1]
+                img = items[key].split('_')[2]
+                price = items[key].split('_')[3]
+                total += quantity * price
+
+            }
+            $('.temp_total').html(total)
+            $('.tax').html(total * 0.1)
+            $('.total').html(total * 1.1)
+        }
+        updateTotal()
+
+    </script>
+    <script>
+        const updateCart = () => {
+            const cart = { ...localStorage };
+            let total = 0;
+            for (item in cart) {
+                total += +cart[item].split('_')[0]
+            }
+            document.querySelector('.fa-shopping-cart').textContent = `\t` + total;
+        }
+    </script>
+    <script>
+        $('.btn-desc').on('click', function () {
+            const key = $(this).attr('value')
+            let parent = $(this).parent()
+            let quantity_element = parent.children(`.quantity-${key}`)
+            let price_element = $(`.price-column-${key}`)
+
+
+            let new_quantity = +quantity_element.val() - 1;
+
+            if (localStorage.getItem(key).split(' ')[0] > 0) {
+                localStorage.setItem(key, new_quantity + ' ' + localStorage.getItem(key).split(' ')[1] + ' ' + localStorage.getItem(key).split(' ')[2])
+                quantity_element.attr('value', new_quantity)
+                price_element.html(+price_element.attr('value') * new_quantity)
+
+            }
+
+            updateCart()
+            updateTotal()
+        })
+
+        $('.btn-inc').on('click', function () {
+            const key = $(this).attr('value')
+            let parent = $(this).parent()
+            let quantity_element = parent.children(`.quantity-${key}`)
+            let price_element = $(`.price-column-${key}`)
+
+            let new_quantity = +quantity_element.val() + 1;
+            localStorage.setItem(key, new_quantity + ' ' + localStorage.getItem(key).split(' ')[1] + ' ' + localStorage.getItem(key).split(' ')[2])
+            quantity_element.attr('value', new_quantity)
+            price_element.html(+price_element.attr('value') * new_quantity)
+            updateCart()
+            updateTotal()
+
+        })
+    </script>
+    <script>
+
+    </script>
+    {{> updateCart}}
+    {{> localStorageChange}}
+</body>
 
 </html>

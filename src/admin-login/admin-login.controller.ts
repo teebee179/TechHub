@@ -1,42 +1,38 @@
-import { Controller, Get, Post, Render, Redirect, Req, Body, Res, UseGuards } from '@nestjs/common';
-import { AuthGuard } from '@nestjs/passport';
+import { LoginGuard } from './../Guards/login.guard';
+import { Body, Controller, Get, Post, Render, Req, UseFilters, UseGuards } from '@nestjs/common';
 import { AdminLoginService } from './admin-login.service';
-import { JwtAuthGuard } from './jwt-auth.guard';
-import { LocalAuthGuard } from './local-auth.guard';
+import { Admin_AuthExceptionFilter } from 'src/Guards/admin-auth-exception.filter';
+import { createAccountDto } from 'src/DTO/createAccount.dto';
+import { JwtService } from '@nestjs/jwt';
+import { AuthGuard } from '@nestjs/passport';
 
+@Controller('/admin' || '/admin/login')
+@UseFilters(Admin_AuthExceptionFilter)
 
-@Controller('admin')
 export class AdminLoginController {
   constructor(
-    private readonly adminLoginService: AdminLoginService
+    private readonly adminLoginService: AdminLoginService,
+    private jwtService: JwtService,
+
     ) {}
+
+
   @Get()
-  @Render('./Admin/login')
-  root(@Req() req){
-    //console.log(req);
-    
+  @Render('./admin/login')
+  root(){
+    console.log('abc');
   }
 
-  //@UseGuards(LocalAuthGuard)
   @Post()
-  async login(@Body() body, @Res() res,  @Req() req){
-    
-    const result = await this.adminLoginService.validateUser(body.username, body.password)
-  
-    if (result){
-      return res.redirect('/admin/home')
-    }
-    
-    else {
-      return res.redirect('/admin/')
-    }
+  //@UseGuards(AdminLoginGuard)
+  @Render("./admin/home")
+  async login(@Body() user:createAccountDto, @Req() req) {
+    const foundUser = await this.adminLoginService.validUser(user.user_Name, user.password);
+    console.log(foundUser)
+    if (!foundUser) return { url: '/login' };
+    const payload = {name: foundUser.user_Name, sub:foundUser.id};
+    const accessToken = this.jwtService.sign(payload);
+    req.user = foundUser;
+    return {user: foundUser};
   }
-
-  @UseGuards(JwtAuthGuard)
-  @Get('profile')
-  getProfile(@Req() req) {
-    return req.user;
-  }
-  //@Get('/logout')
-  
 }

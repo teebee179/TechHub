@@ -1,0 +1,16 @@
+<script>
+    $('.fa-shopping-cart').on('DOMSubtreeModified', function() {
+        const cart = { ...localStorage };
+        let products = ``
+        for (item in cart) {
+            products += item + '_' + cart[item].split(' ')[0] + ' '
+        }
+        user_id = $('.user_id').attr('value')
+        let pars = user_id + '*' + products.substring(0, products.length-1)
+        $(this).attr('value', pars)
+        $.getJSON('/cart/' + pars, function() {
+            console.log('da gui')
+        })
+    })
+    
+</script>

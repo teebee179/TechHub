@@ -7,6 +7,6 @@ import entities from 'src/Entities/All_Entities';
 @Module({
   imports: [TypeOrmModule.forFeature(entities)],
   controllers: [AdminManagementController],
-  providers: [AdminManagementService]
+  providers: [AdminManagementService],
 })
 export class AdminManagementModule {}

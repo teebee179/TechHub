@@ -31,4 +31,23 @@ export class UserProductDetailService {
             throw error;
         }
     }
+
+    async get_Products_By_Type(type: string): Promise<Product[]> {
+        try {
+            return this.productRepo.find({where: {brand: type}});
+        } catch (error) {
+            //i dont know how to handle this
+            throw error;
+        }
+    }
+
+    async get_Total_Products_By_Type(type: string): Promise<number> {
+        try {
+            const [prods, total] = await this.productRepo.findAndCount({where: {brand: type}});
+            return total;
+        } catch (error) {
+            //i dont know how to handle this
+            throw error;
+        }
+    }
 }

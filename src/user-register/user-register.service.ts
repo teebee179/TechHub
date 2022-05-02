@@ -22,4 +22,10 @@ export class UserRegisterService {
         const hash = bcrypt.hashSync(password, 10);
         return hash;
     }
+
+    async is_Exists(user_name: string): Promise<Boolean> {
+        const users = await this.userRepo.find()
+        const exists = await users.find(user => user.user_username === user_name)
+        return (!!exists);
+    }
 }

@@ -30,17 +30,25 @@
           Our Products
         </h2>
       </div>
-      <div class="row">
+      <div class="filtering" style="margin-top: 50px;">
+        <input type="text" placeholder="Search Your Item Here" id="quick-search"> 
+        <div class="button-space">
+          <button class="btn btn-primary text-uppercase filter-choice a-z active">A-Z</button>
+          <button class="btn btn-primary text-uppercase filter-choice p-asc">Price Ascending</button>
+          <button class="btn btn-primary text-uppercase filter-choice p-desc">Price Descending</button>
+        </div>
+      </div>
+      <ul class="row productList items">
         {{#prods}}
-        <div class="col-sm-6 col-lg-4">
+        <li class="col-sm-6 col-lg-4">
           <div class="box">
             <div class="img-box">
-              <img src={{prod_img}} alt="" name={{prod_img}}>
-              <a href="detail/{{id}}" class="add_cart_btn">
+              <img id={{id}} src={{prod_img}} alt="" name={{product_name}}>
+              <button class="add_cart_btn" value={{id}}>
                 <span>
                   Add To Cart
                 </span>
-              </a>
+              </button>
               <a href="detail/{{id}}" class="detail_btn">
                 <span>
                   Detail
@@ -48,11 +56,11 @@
               </a>
             </div>
             <div class="detail-box">
-              <h5 name={{prod_name}}>
+              <h5 name={{prod_name}} class="product-name" id ="{{id}}_name" value ="{{product_name}}">
                 {{product_name}}
               </h5>
               <div class="product_info">
-                <h5 name={{prod_price}}>
+                <h5 class="price" id="price_{{id}}" value={{price}} name={{prod_price}} >
                   <span>$</span> {{price}}
                 </h5>
                 <div class="star_container">
@@ -61,23 +69,26 @@
               </div>
             </div>
           </div>
-        </div>
+        </li>
         {{/prods}}
-      </div>
+      </ul>
       <nav aria-label="Page navigation example">
-        
+
         <ul class="pagination justify-content-center">
-          <li class="page-item">
-            <a class="page-link" href="{{prevPage}}"" tabindex="-1">Previous</a>
-          </li>
-          {{#pages}}
-             <li class="page-item"><a class="page-link" href="./{{.}}">{{.}}</a></li>
-          {{/pages}}
           <li>
-            <a class="page-link" href="{{nextPage}}"">Next</a>
+            <a class="page-link" id="prev">Previous</a>
+          </li>
+          {{#each pages}}
+          {{#if @first}} <li class="page-item"><a class="page-link pageNumber currPage" value={{.}}>{{.}}</a></li>
+          {{else}}
+          <li class="page-item"><a class="page-link pageNumber" value={{.}}>{{.}}</a></li>
+          {{/if}}
+          {{/each}}
+          <li>
+            <a class="page-link" id="next">Next</a>
           </li>
         </ul>
-       
+
       </nav>
     </div>
   </section>
@@ -88,7 +99,106 @@
   {{> script}}
   <script>
     $('.star_container').append(`{{{prod_rating}}}`);
+    $(function () {
+      $('.page-link').on('click', function () {
+        $('.page-link').removeClass('currPage')
+        $(this).addClass('currPage');
+        var page = parseInt($('.currPage').attr('value'));
+        if ($(this).attr('id') === 'prev') {
+          console.log("prev")
+          page--;
+        }
+        if ($(this).attr('id') === 'next') {
+          console.log("next")
+          page++;
+        }
+        console.log(page)
+        $.getJSON('/product/page/' + page, function (data) {
+          console.log(data)
+          $('.productList').empty()
+          var i;
+          let htmlString = ``
+          for (i = 0; i < data.length; ++i) {
+            /*
+            var  = 
+              '<div class="col-sm-6 col-lg-4">' +
+              '<div class="box">' + '<div class="img-box">' + '<img src=' + data[i].prod_img + ' alt="" name={{product_name}}>'
+              + `<button class="add_cart_btn" value=${date[i].id}>`
+              + '<a href="detail/' + data[i].id + '" class="detail_btn" > <span> Detail </span> </a> </div>'
+              + '<div class="detail-box">' + '<h5 name={{prod_name}}>' + data[i].product_name + '</h5>'
+              + '<div class="product_info">' + '<h5 name={{prod_price}}>' + '<span>$</span>' + data[i].price + '</h5>'
+              + '</div> </div> </div> </div>'
+            */
+            htmlString = 
+            `
+              <div class="col-sm-6 col-lg-4">
+                <div class="box">
+                  <div class="img-box">
+                    <img id=${data[i].id} src=${data[i].prod_img} alt="" name=${data[i].product_name}>
+                    <button class="add_cart_btn" value=${data[i].id}>
+                      <span>
+                        Add To Cart
+                      </span>
+                    </button>
+                    <a href="detail/${data[i].id}" class="detail_btn">
+                      <span>
+                        Detail
+                      </span>
+                    </a>
+                  </div>
+                  <div class="detail-box">
+                    <h5 name=${data[i].prod_name} class="product-name">
+                      ${data[i].product_name}
+                    </h5>
+                    <div class="product_info">
+                      <h5 class="price" id="price_${data[i].id}" value=${data[i].price} name=${data[i].prod_price} >
+                        <span>$</span> ${data[i].price}
+                      </h5>
+                      <div class="star_container">
+
+                      </div>
+                    </div>
+                  </div>
+                </div>
+            </div>
+            `
+            $('.productList').append(htmlString);
+          }
+        })
+      })
+    })
+    $('.add_cart_btn').on('click', function() {
+      let key = $(this).val()
+      let img = $(`#${key}`).attr('src');
+      let productName = $(`#${key}_name`).attr('value');
+      let price = $(`#price_${key}`).attr('value')
+      console.log(productName);
+      if (!localStorage.getItem(key)) {
+        localStorage.setItem(key, '1' + '_' + productName  + '_' + img + '_' + price);
+      }
+      else {
+        localStorage.setItem(key, +localStorage.getItem(key).split('_')[0] + 1 + '_' + productName  + '_' + img + '_' + price)
+        
+      }
+      const cart = { ...localStorage };
+      let products = ``
+      let total_items = 0;
+      for (item in cart) {
+        total_items += +cart[item].split('_')[0]
+        products += item + '_' + cart[item].split('_')[0] + '_'
+      }
+      document.querySelector('.fa-shopping-cart').textContent = `\t` + total_items;
+      products = products.substring(0, products.length-1)
+      
+    })
   </script>
+
+  
+  {{>forFilter}}
+  {{> localStorageChange}}
+  
+  {{> updateCart}}
+
 </body>
 
 </html>

@@ -1,10 +1,14 @@
-import { Controller, Get, Post, Render, Redirect, Param, Res } from '@nestjs/common';
+import { Controller, Get, Post, Render, Redirect, Param, Res, UseFilters, UseGuards } from '@nestjs/common';
+import { Admin_AuthExceptionFilter } from 'src/Guards/admin-auth-exception.filter';
+import { AuthenticatedGuard } from 'src/Guards/authenticated.guard';
 import { AdminManagementService } from './admin-management.service';
 
 @Controller('admin/manages')
+// @UseFilters(Admin_AuthExceptionFilter)
 export class AdminManagementController {
   constructor(private readonly adminManagementService: AdminManagementService) {}
   @Get()
+  // @UseGuards(AuthenticatedGuard)
   @Render('./Admin/manage-users')
   async root(){
     const page = 1;
